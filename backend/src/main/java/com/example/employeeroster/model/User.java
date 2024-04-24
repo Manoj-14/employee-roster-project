@@ -19,6 +19,7 @@ public class User {
     private String name;
     @NotNull
     private String email;
+
     @NotNull
     private List<Role> role;
 
