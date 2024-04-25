@@ -1,23 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  RouterProvider,
+} from "react-router-dom";
+import "./App.css";
+import LoginScreen from "./screens/LoginScreen";
+import { Provider } from "react-redux";
+import { persistor, store } from "./store";
+import { PersistGate } from "redux-persist/lib/integration/react";
+import UserDashBoard from "./screens/UserDashBoard";
+import UserScreen from "./screens/UserScreen";
+import "bootstrap/dist/css/bootstrap.min.css";
+import TeamScreen from "./screens/TeamScreen";
+import AdminScreen from "./screens/AdminScreen";
+import AdminDashboard from "./screens/AdminDashboard";
+
+const routers = createBrowserRouter(
+  createRoutesFromElements(
+    <Route>
+      <Route path="/">
+        <Route path="login" element={<LoginScreen />} />
+      </Route>
+      <Route path="/user" element={<UserScreen />}>
+        <Route path="dashboard" element={<UserDashBoard />} />
+        <Route path="team" element={<TeamScreen />} />
+      </Route>
+      <Route path="/admin" element={<AdminScreen />}>
+        <Route path="dashboard" element={<AdminDashboard />} />
+      </Route>
+    </Route>
+  )
+);
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Provider store={store}>
+        <PersistGate loading={false} persistor={persistor}>
+          <RouterProvider router={routers} />
+        </PersistGate>
+      </Provider>
     </div>
   );
 }
