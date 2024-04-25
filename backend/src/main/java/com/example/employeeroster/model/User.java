@@ -1,5 +1,6 @@
 package com.example.employeeroster.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -18,9 +19,13 @@ public class User {
     @NotNull
     private String name;
     @NotNull
+    private String empId;
+    @NotNull
     private String email;
-
+    @NotNull
+    private Shift shift;
+    @NotNull
+    private WeekOff weekOff;
     @NotNull
     private List<Role> role;
-
 }
