@@ -1,0 +1,9 @@
+.data-cell {
+  display: inline-block;
+  width: 120px;
+  margin: 5px;
+}
+
+.week-board > div {
+  height: min-content;
+}

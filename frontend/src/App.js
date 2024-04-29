@@ -15,6 +15,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import TeamScreen from "./screens/TeamScreen";
 import AdminScreen from "./screens/AdminScreen";
 import AdminDashboard from "./screens/AdminDashboard";
+import ManageEmployeeScreen from "./screens/ManageEmployeeScreen";
 
 const routers = createBrowserRouter(
   createRoutesFromElements(
@@ -28,6 +29,8 @@ const routers = createBrowserRouter(
       </Route>
       <Route path="/admin" element={<AdminScreen />}>
         <Route path="dashboard" element={<AdminDashboard />} />
+        <Route path="employee/operation" element={<ManageEmployeeScreen />} />
+        <Route path="team" element={<TeamScreen />} />
       </Route>
     </Route>
   )

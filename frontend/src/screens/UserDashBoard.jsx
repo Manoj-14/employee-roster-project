@@ -2,6 +2,7 @@ import { InfoCircleOutlined } from "@ant-design/icons";
 import { Button, Select, Tooltip } from "antd";
 import { Option } from "antd/es/mentions";
 import React from "react";
+import "../resources/css/input.css";
 
 const UserDashBoard = () => {
   return (

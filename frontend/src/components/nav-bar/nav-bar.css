@@ -16,7 +16,7 @@
 }
 
 .sider {
-  position: absolute;
+  position: fixed;
   height: 100vh;
   top: 0;
   bottom: 0;

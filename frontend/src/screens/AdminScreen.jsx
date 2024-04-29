@@ -1,11 +1,11 @@
 import React from "react";
-import NavBar from "../components/nav-bar/NavBar";
 import { Outlet } from "react-router-dom";
+import AdminNav from "../components/nav-bar/AdminNav";
 
 const AdminScreen = () => {
   return (
     <div>
-      <NavBar />
+      <AdminNav />
       <Outlet />
     </div>
   );

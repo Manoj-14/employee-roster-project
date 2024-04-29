@@ -36,6 +36,10 @@ body {
     "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue";
 }
 
+.radio-button {
+  margin: 2px;
+}
+
 .login-page {
   display: flex;
   justify-content: center;
@@ -81,7 +85,10 @@ body {
 #login-form .ant-input-affix-wrapper {
   padding: 12px 15px;
 }
-#login-form_username {
+#login-form_username,
+#login-form_email,
+#login-form_name,
+#login-form_empId {
   height: 48px;
 }
 #login-form .ant-btn {
@@ -116,77 +123,10 @@ body {
     max-width: 100%;
   }
 }
-/* Input css */
-
-.material-textfield {
-  position: relative;
-  margin-top: 1rem;
-}
-label {
-  position: absolute;
-  font-size: 1rem;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: white;
-  color: gray;
-  padding: 0 0.3rem;
-  margin: 0 0.5rem;
-  transition: 0.1s ease-out;
-  transform-origin: left top;
-  pointer-events: none;
-}
-input,
-textarea {
-  width: 30rem !important;
-  font-size: 1rem;
-  outline: none;
-  border: 1px solid gray;
-  border-radius: 5px;
-  padding: 0.7rem 0.3rem;
-  color: #080357;
-  transition: 0.1s ease-out;
-  font-weight: 700;
-}
-#edit-prof {
-  border: 1px solid gray;
-  border-radius: 5px;
-}
-input:focus,
-textarea:focus,
-#edit-prof {
-  border-color: var(--prmy-color);
-}
-input:focus + label,
-textarea:focus + label {
-  color: var(--prmy-color);
-  top: 0;
-  transform: translateY(-50%) scale(0.9);
-  border-radius: 10px;
-  font-weight: 700;
-}
-input:not(:placeholder-shown) + label,
-textarea:not(:placeholder-shown) + label {
-  top: 0;
-  transform: translateY(-50%) scale(0.9);
-}
-.material-textfield:last-child div {
-  color: #fff;
-  background-color: var(--sec-color3);
-  padding: 6px 10px;
-  flex-grow: 1;
-  flex-basis: 0;
-  cursor: pointer;
-  border-radius: 10px;
-}
-.material-textfield:last-child div a {
-  font-size: larger;
-  font-weight: 600;
-}
-.material-textfield:last-child {
-  display: flex;
-}
-
 .dashboard > div {
   height: 100vh;
+}
+
+.employee-add-form {
+  width: 100%;
 }

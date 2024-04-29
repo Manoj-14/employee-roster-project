@@ -1,8 +1,8 @@
 import React from "react";
-import Tabel from "../components/Tabel";
+import WeekCalander from "../components/week-calander/WeekCalander";
 
 const TeamScreen = () => {
-  return <Tabel />;
+  return <WeekCalander />;
 };
 
 export default TeamScreen;
