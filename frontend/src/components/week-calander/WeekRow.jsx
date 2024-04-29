@@ -1,16 +1,18 @@
 import { Select } from "antd";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { employees } from "../../resources/data/employee";
+// import { employees } from "../../resources/data/employee";
 import { formatedData } from "../../resources/data/dataFormatting";
-import { type } from "@testing-library/user-event/dist/type";
 import "./week-calander.css";
-import { Option } from "antd/es/mentions";
 import { Form } from "react-bootstrap";
+import { CaretLeftOutlined, CaretRightOutlined } from "@ant-design/icons";
+import { useDispatch } from "react-redux";
+import { getAllUser } from "../../api";
 
 const EmployeeRow = ({ employee, dates }) => {
   const getShift = (shift) => {
-    if (shift === "gs" || shift === "es" || shift === "ms") return shift;
+    if (shift === "GENERAL" || shift === "EVENING" || shift === "MORNING")
+      return shift;
     else return "na";
   };
 
@@ -18,19 +20,6 @@ const EmployeeRow = ({ employee, dates }) => {
     <div>
       <span className="data-cell">{employee.name}</span>
       {dates.map((day) => {
-        // return (
-        //   <Select
-        //     defaultValue={employee[day]}
-        //     className="data-cell"
-        //     style={{ width: 120 }}
-        //     name="shift"
-        //   >
-        //     <Option value="gs">General Shift</Option>
-        //     <Option value="ms">Morning Shift</Option>
-        //     <Option value="es">Evening Shift</Option>
-        //   </Select>
-        // );
-        // return <span className="data-cell">{employee[day]}</span>;
         return (
           <Form.Select
             className="data-cell"
@@ -38,9 +27,9 @@ const EmployeeRow = ({ employee, dates }) => {
             defaultValue={getShift(employee[day])}
             disabled={getShift(employee[day]) === "na"}
           >
-            <option value="gs">General Shift</option>
-            <option value="ms">Morning Shift</option>
-            <option value="es">Evening Shift</option>
+            <option value="GENERAL">General </option>
+            <option value="MORNING">Morning </option>
+            <option value="EVENING">Evening </option>
             <option style={{ display: "none" }} value="na">
               Not Assigned
             </option>
@@ -51,7 +40,9 @@ const EmployeeRow = ({ employee, dates }) => {
   );
 };
 
-const WeekRow = ({ employee }) => {
+const WeekRow = () => {
+  const [employees, setEmployees] = useState([]);
+
   const getDatesOfWeek = (year, week) => {
     let dates = [];
     let startDate = moment().year(year).isoWeek(week).isoWeekday(1);
@@ -74,10 +65,7 @@ const WeekRow = ({ employee }) => {
     let currentDate = firstDayOfMonth.clone().startOf("isoWeek");
 
     while (currentDate.isBefore(lastDayOfMonth)) {
-      let week = {};
-      week.value = currentDate.isoWeek();
-      week.label = currentDate.isoWeek();
-      weeks.push(week);
+      weeks.push(currentDate.isoWeek());
       currentDate.add(1, "week");
     }
 
@@ -96,39 +84,89 @@ const WeekRow = ({ employee }) => {
     setDates(getDatesOfWeek(year, value));
   };
 
+  const getWeekDates = (weekNumber, year) => {
+    weekNumber = parseInt(weekNumber);
+    year = parseInt(year);
+
+    const startOfWeek = moment().year(year).week(weekNumber).startOf("week");
+    const endOfWeek = moment().year(year).week(weekNumber).endOf("week");
+
+    const firstDate = startOfWeek.format("DD-MM-YYYY");
+    const lastDate = endOfWeek.format("DD-MM-YYYY");
+
+    return `${firstDate} to ${lastDate}`;
+  };
+
+  const handleIncrementWeek = () => {
+    console.log(week);
+    setWeek((p) => p + 1);
+    console.log(week);
+  };
+  const handleDecrementWeek = () => {
+    console.log(week);
+    setWeek((p) => p - 1);
+    console.log(week);
+  };
+
   let columnheader = [];
 
   useEffect(() => {
-    console.log(dates);
+    const fetchusers = async () => {
+      const response = await getAllUser();
+      setEmployees(response.data);
+      const data = await getFormatedData(response.data);
+      setEmployeesData((d) => data);
+    };
+    fetchusers();
+    console.log(formatedEndDates(weeksOfMonth, year));
+  }, []);
 
+  useEffect(() => {
+    setDates(getDatesOfWeek(year, week));
     const fetch = async () => {
-      const data = await getFormatedData();
+      const data = await getFormatedData(employees);
+      console.log("Data", data);
+      setEmployeesData((d) => data);
     };
     fetch();
   }, [week]);
 
-  const getFormatedData = async () => {
-    await setEmployeesData((d) => formatedData(employees));
-    return employeesData;
+  const getFormatedData = async (employees) => {
+    const data = await formatedData(employees);
+    return data;
   };
 
   const getMonthByWeek = (year, week) => {
     const date = moment(`${year}-01-01`).add((week - 1) * 7, "days");
-    console.log(date);
-    console.log(date.format("MM"));
+    return date.format("MMMM");
   };
 
   columnheader = ["Name", ...dates];
+  const formatedEndDates = (weekNums, year) => {
+    const formatedWeekDates = [];
+    weekNums.forEach((weekNum) => {
+      const option = {};
+      option.label = getWeekDates(weekNum, year);
+      option.value = getWeekDates(weekNum, year);
+      formatedWeekDates.push(option);
+    });
+    console.log(formatedWeekDates);
+    return formatedWeekDates;
+  };
 
   return (
     <div className="d-flex justify-content-center align-items-center week-board">
       <div>
         <div>
+          <p>{getMonthByWeek(year, week)}</p>
+          <CaretLeftOutlined onClick={handleDecrementWeek} />
           <Select
-            options={weeksOfMonth}
-            defaultValue={week}
+            options={formatedEndDates(weeksOfMonth, year)}
+            defaultValue={getWeekDates(week, year)}
+            value={getWeekDates(week, year)}
             onChange={handleWeekChange}
           />
+          <CaretRightOutlined onClick={handleIncrementWeek} />
         </div>
         <div>
           {columnheader.map((column) => (

@@ -24,6 +24,7 @@ export const formatedData = (employees) => {
     });
     formatedData.push(employee);
   });
+  console.log("Formated Data", formatedData);
 
   return formatedData;
 };

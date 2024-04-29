@@ -7,6 +7,13 @@ export const getAllUser = async () => {
 };
 
 export const AddEmployee = async (data) => {
-  const response = await axios.post(`${BASE_URL}/user/create`, { data });
+  console.log(data);
+  const response = await axios
+    .post(`${BASE_URL}/user/create`, data)
+    .catch((err) => {
+      if (err.status === 406) {
+        throw new Error("User Already Exists");
+      }
+    });
   return response;
 };

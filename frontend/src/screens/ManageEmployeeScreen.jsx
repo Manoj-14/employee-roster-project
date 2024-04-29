@@ -17,9 +17,13 @@ const ManageEmployeeScreen = () => {
     values.role = empRole;
     console.log(values);
     const response = await AddEmployee(values);
-    console.log(response);
-    message.success(`${values.name} added Succesfully`);
-    form.resetFields();
+    if (response) {
+      console.log(response);
+      message.success(`${values.name} added Succesfully`);
+      form.resetFields();
+    } else {
+      message.error("Not Able to add Employee");
+    }
     setLoading((p) => false);
   };
   const onFinishFailed = (values) => {
@@ -93,11 +97,11 @@ const ManageEmployeeScreen = () => {
           </Radio.Group>
         </Form.Item>
         <Form.Item
-          name="weekoff"
+          name="weekOff"
           rules={[{ required: true, message: "Please select week off's" }]}
         >
           <Radio.Group>
-            <Radio.Button className="radio-button" value="ERISAT">
+            <Radio.Button className="radio-button" value="FRISAT">
               FRIDAY/SATURDAY
             </Radio.Button>
             <Radio.Button className="radio-button" value="SUNMON">
@@ -107,7 +111,7 @@ const ManageEmployeeScreen = () => {
         </Form.Item>
         <Form.Item>
           <Button
-            loading={loading}
+            // loading={loading}
             type="primary"
             htmlType="submit"
             className="login-form-button"
