@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.Date;
 import java.util.List;
@@ -21,7 +22,11 @@ public class User {
     @NotNull
     private String empId;
     @NotNull
+    @Field("email")
     private String email;
+    @NotNull
+    @Field("password")
+    private String password;
     @NotNull
     private Shift shift;
     @NotNull

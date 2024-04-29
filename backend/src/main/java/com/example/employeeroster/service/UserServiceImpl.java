@@ -1,17 +1,26 @@
 package com.example.employeeroster.service;
 
+import com.example.employeeroster.dto.UserResponse;
+import com.example.employeeroster.exception.UserAlreadyExistsException;
 import com.example.employeeroster.exception.UserNotFoundException;
 import com.example.employeeroster.model.User;
 import com.example.employeeroster.repository.UserRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService{
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -19,7 +28,15 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User createUser(User user) {
-        return userRepository.save(user);
+        String empId = user.getEmpId();
+        if(userRepository.findUserByEmpId(empId)!=null){
+            throw new UserAlreadyExistsException("User Already Exists");
+        } else {
+            UUID password = UUID.randomUUID();
+            user.setPassword(password.toString());
+            return userRepository.save(user);
+        }
+
     }
 
     @Override
@@ -51,4 +68,24 @@ public class UserServiceImpl implements UserService{
         if(user!=null) userRepository.deleteById(userId);
         else throw new UserNotFoundException("User Not Found");
     }
+
+    @Override
+    public User findUserByEmailAndPassword(String email, String password){
+        return userRepository.findUserByEmailAndPassword(email,password);
+    }
+
+    @Override
+    public List<UserResponse> getUsers() {
+        List<User> user = this.userRepository.findAll();
+        List<UserResponse> userResponses = new ArrayList<>();
+
+        user.forEach(user1 -> {
+            UserResponse userResponse = modelMapper.map(user1,UserResponse.class);
+            userResponses.add(userResponse);
+        });
+        return userResponses;
+    }
+
+
+
 }

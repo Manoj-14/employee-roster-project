@@ -1,9 +1,11 @@
 package com.example.employeeroster.controller;
 
+import com.example.employeeroster.dto.UserResponse;
 import com.example.employeeroster.exception.UserNotFoundException;
 import com.example.employeeroster.model.User;
 import com.example.employeeroster.service.UserService;
 import jakarta.validation.Valid;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,8 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
@@ -19,9 +23,13 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @GetMapping("/get")
     public ResponseEntity<?> getUsers(){
-        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
+        List<UserResponse> userResponses = userService.getUsers();
+        return new ResponseEntity<>(userResponses, HttpStatus.OK);
     }
 
     @PostMapping("/create")
@@ -31,7 +39,7 @@ public class UserController {
             URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedUser.getId()).toUri();
             return ResponseEntity.created(location).build();
         } catch (Exception ex){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -71,4 +79,27 @@ public class UserController {
         }
     }
 
+    @GetMapping("/{email}/{password}")
+    public ResponseEntity<?> getUserByEmailPassword(@PathVariable String email,@PathVariable String password){
+        try {
+            User user = userService.findUserByEmailAndPassword(email,password);
+            return new ResponseEntity<>(user,HttpStatus.OK);
+        } catch (UserNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<UserResponse> loginUser(@RequestBody Map<String,String> request){
+        String email = request.get("email");
+        String password = request.get("password");
+        System.out.println(email+" "+password);
+
+        User user = userService.findUserByEmailAndPassword(email,password);
+        if(user==null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        UserResponse userResponse = modelMapper.map(user,UserResponse.class);
+        return new ResponseEntity<>(userResponse,HttpStatus.OK);
+    }
 }
