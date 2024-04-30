@@ -22,7 +22,7 @@ const ManageEmployeeScreen = () => {
       message.success(`${values.name} added Succesfully`);
       form.resetFields();
     } else {
-      message.error("Not Able to add Employee");
+      message.error("Employee ID already exists");
     }
     setLoading((p) => false);
   };

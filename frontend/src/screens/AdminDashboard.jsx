@@ -1,11 +1,11 @@
 import { EditOutlined } from "@ant-design/icons";
-import { Avatar, Badge, Card } from "antd";
+import { Avatar, Badge, Card, Modal, Spin } from "antd";
 // import { employees } from "../resources/data/employee";
 import Meta from "antd/es/card/Meta";
 import React, { useEffect, useState } from "react";
 import { getAllUser } from "../api";
 
-const Employee = ({ employee }) => {
+const Employee = ({ employee, showModal }) => {
   const getShift = (shift) => {
     switch (shift) {
       case "GENERAL":
@@ -19,7 +19,7 @@ const Employee = ({ employee }) => {
     }
   };
   return (
-    <Card className="m-2" style={{ width: 300 }}>
+    <Card onClick={showModal} className="m-2" style={{ width: 300 }}>
       <Meta
         avatar={
           <Avatar src="https://api.dicebear.com/7.x/miniavs/svg?seed=8" />
@@ -55,7 +55,9 @@ const AdminDashboard = () => {
         </div>
         <div className="employees d-flex flex-wrap">
           {employees.map((employee) => (
-            <Employee employee={employee} />
+            <>
+              <Employee employee={employee} />
+            </>
           ))}
         </div>
       </div>

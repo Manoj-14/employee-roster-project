@@ -25,7 +25,7 @@ const NavBar = () => {
             <Link to="/user/team">Team</Link>
           </Menu.Item>
           <Menu.Item key="5">
-            <Link to="/user/logout">Logout</Link>
+            <Link to="/logout">Logout</Link>
           </Menu.Item>
         </Menu>
       </Sider>

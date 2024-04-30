@@ -1,4 +1,4 @@
-import { Select } from "antd";
+import { Button, Select } from "antd";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 // import { employees } from "../../resources/data/employee";
@@ -6,10 +6,11 @@ import { formatedData } from "../../resources/data/dataFormatting";
 import "./week-calander.css";
 import { Form } from "react-bootstrap";
 import { CaretLeftOutlined, CaretRightOutlined } from "@ant-design/icons";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getAllUser } from "../../api";
 
 const EmployeeRow = ({ employee, dates }) => {
+  const { user } = useSelector((state) => state.user);
   const getShift = (shift) => {
     if (shift === "GENERAL" || shift === "EVENING" || shift === "MORNING")
       return shift;
@@ -17,7 +18,13 @@ const EmployeeRow = ({ employee, dates }) => {
   };
 
   return (
-    <div>
+    <div
+      style={
+        employee.empId === user.empId
+          ? { order: -1, border: "1px solid black" }
+          : undefined
+      }
+    >
       <span className="data-cell">{employee.name}</span>
       {dates.map((day) => {
         return (
@@ -25,12 +32,20 @@ const EmployeeRow = ({ employee, dates }) => {
             className="data-cell"
             value={getShift(employee[day])}
             defaultValue={getShift(employee[day])}
-            disabled={getShift(employee[day]) === "na"}
+            disabled={
+              getShift(employee[day]) === "na" ||
+              day !== moment().format("DD-MM-YYYY") ||
+              employee.empId !== user.empId
+            }
           >
-            <option value="GENERAL">General </option>
-            <option value="MORNING">Morning </option>
-            <option value="EVENING">Evening </option>
-            <option style={{ display: "none" }} value="na">
+            <option value="GENERAL">General</option>
+            <option value="MORNING">Morning</option>
+            <option value="EVENING">Evening</option>
+            <option
+              className="shift-option"
+              style={{ display: "none" }}
+              value="na"
+            >
               Not Assigned
             </option>
           </Form.Select>
@@ -158,24 +173,33 @@ const WeekRow = () => {
     <div className="d-flex justify-content-center align-items-center week-board">
       <div>
         <div>
-          <p>{getMonthByWeek(year, week)}</p>
-          <CaretLeftOutlined onClick={handleDecrementWeek} />
-          <Select
-            options={formatedEndDates(weeksOfMonth, year)}
-            defaultValue={getWeekDates(week, year)}
-            value={getWeekDates(week, year)}
-            onChange={handleWeekChange}
-          />
-          <CaretRightOutlined onClick={handleIncrementWeek} />
+          <p className="h3 text-center">All Employee Weekly Roster</p>
+          <div className="week-header d-flex justify-content-between">
+            <p className="alert alert-info p-1">
+              Month {getMonthByWeek(year, week)}
+            </p>
+            <div>
+              <CaretLeftOutlined onClick={handleDecrementWeek} />
+              <Select
+                options={formatedEndDates(weeksOfMonth, year)}
+                defaultValue={getWeekDates(week, year)}
+                value={getWeekDates(week, year)}
+                onChange={handleWeekChange}
+              />
+              <CaretRightOutlined onClick={handleIncrementWeek} />
+            </div>
+          </div>
+          <div>
+            {columnheader.map((column) => (
+              <span className="data-cell">{column}</span>
+            ))}
+          </div>
         </div>
-        <div>
-          {columnheader.map((column) => (
-            <span className="data-cell">{column}</span>
-          ))}
+        <div className="d-flex flex-column">
+          {employeesData.map((employee) => {
+            return <EmployeeRow employee={employee} dates={dates} />;
+          })}
         </div>
-        {employeesData.map((employee) => {
-          return <EmployeeRow employee={employee} dates={dates} />;
-        })}
       </div>
     </div>
   );

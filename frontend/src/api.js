@@ -17,3 +17,16 @@ export const AddEmployee = async (data) => {
     });
   return response;
 };
+
+export const userLogin = async (email, password) => {
+  const response = await axios.post(`${BASE_URL}/user/login`, {
+    email,
+    password,
+  });
+  return response;
+};
+
+export const updateEmployeeShift = async (user) => {
+  const response = await axios.put(`${BASE_URL}/user/update/${user.id}`, user);
+  return response;
+};

@@ -16,6 +16,7 @@ import TeamScreen from "./screens/TeamScreen";
 import AdminScreen from "./screens/AdminScreen";
 import AdminDashboard from "./screens/AdminDashboard";
 import ManageEmployeeScreen from "./screens/ManageEmployeeScreen";
+import Logout from "./components/logout";
 
 const routers = createBrowserRouter(
   createRoutesFromElements(
@@ -32,6 +33,7 @@ const routers = createBrowserRouter(
         <Route path="employee/operation" element={<ManageEmployeeScreen />} />
         <Route path="team" element={<TeamScreen />} />
       </Route>
+      <Route path="/logout" element={<Logout />} />
     </Route>
   )
 );

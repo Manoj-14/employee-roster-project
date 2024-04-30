@@ -1,16 +1,58 @@
 import { InfoCircleOutlined } from "@ant-design/icons";
-import { Button, Select, Tooltip } from "antd";
+import { Button, message, Select, Tooltip } from "antd";
 import { Option } from "antd/es/mentions";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../resources/css/input.css";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { setUser, updateShift } from "../slices/userSlice";
+import { updateEmployeeShift } from "../api";
 
 const UserDashBoard = () => {
+  const [enableUpdate, setEnableUpdate] = useState(false);
+  const { user } = useSelector((state) => state.user);
+  const [shift, setShift] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+    setShift(user.shift);
+  }, []);
+
+  const handleShiftChange = (value) => {
+    console.log(value);
+    setShift(value);
+    setEnableUpdate(true);
+  };
+
+  const handleUpdateShift = async (e) => {
+    e.preventDefault();
+    let updatedUser = { ...user };
+    updatedUser.shift = shift;
+    const response = await updateEmployeeShift(updatedUser);
+    if (response) {
+      dispatch(setUser(updatedUser));
+      message.success("Shift Updated !");
+    } else {
+      message.error("Unable to update shift");
+    }
+    setEnableUpdate(false);
+  };
+
   return (
     <div className="dashboard">
       <div className="d-flex flex-column  justify-content-center align-items-center">
         <h3>Good Morning, John</h3>
         <span>Please Look at your shift today</span>
-        <form class="prof-article" id="profile" autocomplete="off">
+        <form
+          class="prof-article"
+          id="profile"
+          autocomplete="off"
+          onSubmit={(e) => handleUpdateShift(e)}
+        >
           <div class="prof-detail">
             <div class="material-textfield">
               <input
@@ -18,7 +60,7 @@ const UserDashBoard = () => {
                 required
                 name="name"
                 type="text"
-                value="John"
+                value={user.name}
                 readOnly
               />
               <label>Name</label>
@@ -29,7 +71,7 @@ const UserDashBoard = () => {
                 required
                 name="email"
                 type="email"
-                value="manm@gmail.com"
+                value={user.email}
                 readOnly
               />
               <label>Email</label>
@@ -39,8 +81,8 @@ const UserDashBoard = () => {
                 placeholder=" "
                 required
                 name="empId"
-                type="number"
-                value="6154"
+                type="text"
+                value={user.empId}
                 readOnly
               />
               <label>Employee Id</label>
@@ -57,14 +99,21 @@ const UserDashBoard = () => {
                 </Tooltip>{" "}
                 :
               </span>
-              <Select className="mx-2" defaultValue="gs" name="shift">
-                <Option value="gs">General Shift</Option>
-                <Option value="ms">Morning Shift</Option>
-                <Option value="es">Evening Shift</Option>
+              <Select
+                className="mx-2"
+                defaultValue={shift}
+                value={shift}
+                name="shift"
+                onChange={handleShiftChange}
+              >
+                <Option value="GENERAL">General Shift</Option>
+                <Option value="MORNING">Morning Shift</Option>
+                <Option value="EVENING">Evening Shift</Option>
               </Select>
             </div>
             <div class="material-textfield">
               <Button
+                disabled={!enableUpdate}
                 type="primary"
                 htmlType="submit"
                 className="login-form-button"

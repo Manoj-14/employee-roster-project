@@ -26,7 +26,7 @@ const AdminNav = () => {
             <Link to="/admin/employee/operation">Manage Employees</Link>
           </Menu.Item>
           <Menu.Item key="4">
-            <Link to="/admin/logout">Logout</Link>
+            <Link to="/logout">Logout</Link>
           </Menu.Item>
         </Menu>
       </Sider>
