@@ -57,9 +57,11 @@ public class UserServiceImpl implements UserService{
     @Override
     public User updateUser(User user) {
         User dbuser = userRepository.findById(user.getId()).stream().findFirst().orElse(null);
-        if(dbuser!=null) userRepository.save(user);
+        if(dbuser!=null) {
+            user.setPassword(dbuser.getPassword());
+            return userRepository.save(user);
+        }
         else throw new UserNotFoundException("User Not Found");
-        return null;
     }
 
     @Override

@@ -34,13 +34,9 @@ public class UserController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createUser(@RequestBody User user){
-        try{
             User savedUser = userService.createUser(user);
             URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedUser.getId()).toUri();
             return ResponseEntity.created(location).build();
-        } catch (Exception ex){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
     }
 
     @GetMapping("/get/{userId}")
@@ -54,7 +50,7 @@ public class UserController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateUser(@Valid @RequestBody User user,@PathVariable String id){
+    public ResponseEntity<?> updateUser(@RequestBody User user,@PathVariable String id){
         if (id==null){
             throw new NullPointerException("User Id Not Found");
         } else {

@@ -31,6 +31,12 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
 
         return new ResponseEntity<ErrorDetail>(errorDetail, HttpStatus.NOT_ACCEPTABLE);
     }
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public final ResponseEntity<ErrorDetail> handleUserAlreadyExistsException(Exception ex, WebRequest request) throws Exception {
+        ErrorDetail errorDetail = new ErrorDetail(LocalDate.now(), ex.getMessage(), request.getDescription(false));
+
+        return new ResponseEntity<ErrorDetail>(errorDetail, HttpStatus.NOT_ACCEPTABLE);
+    }
     @ExceptionHandler(UserNotFoundException.class)
     public final ResponseEntity<ErrorDetail> handleUserNotFoundException(Exception ex, WebRequest request) throws Exception {
         ErrorDetail errorDetail = new ErrorDetail(LocalDate.now(), ex.getMessage(), request.getDescription(false));
