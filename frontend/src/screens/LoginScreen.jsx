@@ -20,7 +20,7 @@ const SelectAccountTypeModal = ({ accountType, handleRedirection }) => {
 
 const LoginScreen = () => {
   const [isAccountTypeOpen, setIsAccountTypeOpen] = useState(false);
-  const [accountTypes, setAccountTypes] = useState([]);
+  const [accountTypes, setAccountTypes] = useState(null);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -91,7 +91,13 @@ const LoginScreen = () => {
           <p>Login to the Dashboard</p>
           <Form.Item
             name="email"
-            rules={[{ required: true, message: "Please input your username!" }]}
+            rules={[
+              {
+                required: true,
+                message: "Please input your username!",
+                type: "email",
+              },
+            ]}
           >
             <Input placeholder="Username" />
           </Form.Item>
@@ -125,16 +131,17 @@ const LoginScreen = () => {
         onCancel={closeAccountTypeModel}
       >
         <div className="d-flex ">
-          {accountTypes.map((type) => {
-            console.log(type);
-            return (
-              <SelectAccountTypeModal
-                key={`${type}-1`}
-                accountType={type}
-                handleRedirection={handleAccountTypeRedirection}
-              />
-            );
-          })}
+          {user &&
+            accountTypes.map((type) => {
+              console.log(type);
+              return (
+                <SelectAccountTypeModal
+                  key={`${type}-1`}
+                  accountType={type}
+                  handleRedirection={handleAccountTypeRedirection}
+                />
+              );
+            })}
         </div>
       </Modal>
     </div>

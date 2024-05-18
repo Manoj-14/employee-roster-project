@@ -11,7 +11,7 @@ const UserScreen = () => {
     if (!user) {
       navigate("/login");
       return;
-    } else if (!user.role.includes("USER")) {
+    } else if (!user.role.includes("EMPLOYEE")) {
       navigate("/login");
       message.error("You Don't have access to that page");
     }

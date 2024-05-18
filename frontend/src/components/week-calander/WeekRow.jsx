@@ -2,30 +2,44 @@ import { Button, Select } from "antd";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 // import { employees } from "../../resources/data/employee";
-import { formatedData } from "../../resources/data/dataFormatting";
+import {
+  convertArraysToObjects,
+  formatedData,
+} from "../../resources/data/dataFormatting";
 import "./week-calander.css";
 import { Form } from "react-bootstrap";
 import { CaretLeftOutlined, CaretRightOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllUser } from "../../api";
+import { getAllUser, getRosterOfMonth } from "../../api";
 
 const EmployeeRow = ({ employee, dates }) => {
   const { user } = useSelector((state) => state.user);
   const getShift = (shift) => {
-    if (shift === "GENERAL" || shift === "EVENING" || shift === "MORNING")
-      return shift;
-    else return "na";
+    switch (shift) {
+      case "generalShift":
+        return "GENERAL";
+      case "eveningShift":
+        return "EVENING";
+      case "morningShift":
+        return "MORNING";
+      case "weekOffs":
+        return "WEEKOFF";
+      case "holidays":
+        return "HOLIDAY";
+      default:
+        return "na";
+    }
   };
 
   return (
     <div
       style={
-        employee.empId === user.empId
+        employee.user.id === user.id
           ? { order: -1, border: "1px solid black" }
           : undefined
       }
     >
-      <span className="data-cell">{employee.name}</span>
+      <span className="data-cell">{employee.user.name}</span>
       {dates.map((day) => {
         return (
           <Form.Select
@@ -41,6 +55,8 @@ const EmployeeRow = ({ employee, dates }) => {
             <option value="GENERAL">General</option>
             <option value="MORNING">Morning</option>
             <option value="EVENING">Evening</option>
+            <option value="WEEKOFF">Weekend</option>
+            <option value="HOLIDAY">Weekend</option>
             <option
               className="shift-option"
               style={{ display: "none" }}
@@ -56,7 +72,7 @@ const EmployeeRow = ({ employee, dates }) => {
 };
 
 const WeekRow = () => {
-  const [employees, setEmployees] = useState([]);
+  // const [employees, setEmployees] = useState([]);
 
   const getDatesOfWeek = (year, week) => {
     let dates = [];
@@ -126,30 +142,14 @@ const WeekRow = () => {
   let columnheader = [];
 
   useEffect(() => {
-    const fetchusers = async () => {
-      const response = await getAllUser();
-      setEmployees(response.data);
-      const data = await getFormatedData(response.data);
-      setEmployeesData((d) => data);
-    };
-    fetchusers();
-    console.log(formatedEndDates(weeksOfMonth, year));
-  }, []);
-
-  useEffect(() => {
     setDates(getDatesOfWeek(year, week));
     const fetch = async () => {
-      const data = await getFormatedData(employees);
+      const data = await getRosterOfMonth(5, 2024);
       console.log("Data", data);
-      setEmployeesData((d) => data);
+      setEmployeesData((d) => data.rosters);
     };
     fetch();
   }, [week]);
-
-  const getFormatedData = async (employees) => {
-    const data = await formatedData(employees);
-    return data;
-  };
 
   const getMonthByWeek = (year, week) => {
     const date = moment(`${year}-01-01`).add((week - 1) * 7, "days");

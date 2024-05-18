@@ -1,35 +1,40 @@
 package com.example.employeeroster.model;
 
+import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 @Document
 public class Roster {
     @Id
     private String id;
     @DocumentReference
     private User user;
-
-    private List<Date> generalShift;
-    private List<Date> morningShift;
-    private List<Date> nightShift;
-    private List<Date> weekoffs;
-    private List<Date> holidays;
+    @Indexed(unique = true)
+    private String monthYear;
+    private List<LocalDate> generalShift = new ArrayList<>();
+    private List<LocalDate> morningShift = new ArrayList<>();
+    private List<LocalDate> eveningShift = new ArrayList<>();
+    private List<LocalDate> weekOffs = new ArrayList<>();
+    private List<LocalDate> holidays = new ArrayList<>();
 
     public Roster() {
     }
 
-    public Roster(String id, User user, List<Date> generalShift, List<Date> morningShift, List<Date> nightShift, List<Date> weekoffs, List<Date> holidays) {
+    public Roster(String id, User user, List<LocalDate> generalShift, List<LocalDate> morningShift, List<LocalDate> eveningShift, List<LocalDate> weekOffs, List<LocalDate> holidays) {
         this.id = id;
         this.user = user;
         this.generalShift = generalShift;
         this.morningShift = morningShift;
-        this.nightShift = nightShift;
-        this.weekoffs = weekoffs;
+        this.eveningShift = eveningShift;
+        this.weekOffs = weekOffs;
         this.holidays = holidays;
     }
 
@@ -49,44 +54,56 @@ public class Roster {
         this.user = user;
     }
 
-    public List<Date> getGeneralShift() {
+    public List<LocalDate> getGeneralShift() {
         return generalShift;
     }
 
-    public void setGeneralShift(List<Date> generalShift) {
+    public void setGeneralShift(List<LocalDate> generalShift) {
         this.generalShift = generalShift;
     }
 
-    public List<Date> getMorningShift() {
+    public List<LocalDate> getMorningShift() {
         return morningShift;
     }
 
-    public void setMorningShift(List<Date> morningShift) {
+    public void setMorningShift(List<LocalDate> morningShift) {
         this.morningShift = morningShift;
     }
 
-    public List<Date> getNightShift() {
-        return nightShift;
+    public List<LocalDate> getEveningShift() {
+        return eveningShift;
     }
 
-    public void setNightShift(List<Date> nightShift) {
-        this.nightShift = nightShift;
+    public void setEveningShift(List<LocalDate> eveningShift) {
+        this.eveningShift = eveningShift;
     }
 
-    public List<Date> getWeekoffs() {
-        return weekoffs;
+    public List<LocalDate> getWeekOffs() {
+        return weekOffs;
     }
 
-    public void setWeekoffs(List<Date> weekoffs) {
-        this.weekoffs = weekoffs;
+    public void setWeekOffs(List<LocalDate> weekOffs) {
+        this.weekOffs = weekOffs;
     }
 
-    public List<Date> getHolidays() {
+    public List<LocalDate> getHolidays() {
         return holidays;
     }
 
-    public void setHolidays(List<Date> holidays) {
+    public void setHolidays(List<LocalDate> holidays) {
         this.holidays = holidays;
+    }
+
+    public String getMonthYear() {
+        return monthYear;
+    }
+
+    public void setMonthYear(int month,int year) {
+        this.monthYear = YearMonth.of(year,month).toString();
+    }
+
+    public void setMonthYear(YearMonth monthYear) {
+        this.monthYear = monthYear.toString();
     }
 
     @Override
@@ -94,10 +111,11 @@ public class Roster {
         return "Roster{" +
                 "id='" + id + '\'' +
                 ", user=" + user +
+//                ", monthYear=" + monthYear +
                 ", generalShift=" + generalShift +
                 ", morningShift=" + morningShift +
-                ", nightShift=" + nightShift +
-                ", weekoffs=" + weekoffs +
+                ", nightShift=" + eveningShift +
+                ", weekoffs=" + weekOffs +
                 ", holidays=" + holidays +
                 '}';
     }

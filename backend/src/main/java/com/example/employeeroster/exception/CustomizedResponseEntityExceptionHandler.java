@@ -20,8 +20,17 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<ErrorDetail> handleAllException(Exception ex, WebRequest request) throws Exception { //default exception from ResponseEntityExceptionHandler -- so we overridden
         ErrorDetail errorDetail = new ErrorDetail(LocalDate.now(),ex.getMessage(), request.getDescription(false));
-
         return new ResponseEntity<ErrorDetail>(errorDetail, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    @ExceptionHandler(RuntimeException.class)
+    public final ResponseEntity<ErrorDetail> handleRuntimeExceptionException(Exception ex, WebRequest request) throws Exception { //default exception from ResponseEntityExceptionHandler -- so we overridden
+        ErrorDetail errorDetail = new ErrorDetail(LocalDate.now(),ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<ErrorDetail>(errorDetail, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    @ExceptionHandler(MonthRosterNotFoundException.class)
+    public final ResponseEntity<ErrorDetail> handleMonthRosterNotFoundException(Exception ex, WebRequest request) throws Exception { //default exception from ResponseEntityExceptionHandler -- so we overridden
+        ErrorDetail errorDetail = new ErrorDetail(LocalDate.now(),ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<ErrorDetail>(errorDetail, HttpStatus.NOT_FOUND);
     }
 
 
@@ -37,11 +46,16 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
 
         return new ResponseEntity<ErrorDetail>(errorDetail, HttpStatus.NOT_ACCEPTABLE);
     }
+    @ExceptionHandler(RosterAlreadyExistsException.class)
+    public final ResponseEntity<ErrorDetail> handleRosException(Exception ex, WebRequest request) throws Exception {
+        ErrorDetail errorDetail = new ErrorDetail(LocalDate.now(), ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<ErrorDetail>(errorDetail, HttpStatus.NOT_ACCEPTABLE);
+    }
     @ExceptionHandler(UserNotFoundException.class)
     public final ResponseEntity<ErrorDetail> handleUserNotFoundException(Exception ex, WebRequest request) throws Exception {
         ErrorDetail errorDetail = new ErrorDetail(LocalDate.now(), ex.getMessage(), request.getDescription(false));
 
-        return new ResponseEntity<ErrorDetail>(errorDetail, HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity<ErrorDetail>(errorDetail, HttpStatus.NOT_FOUND);
     }
 
     @Override

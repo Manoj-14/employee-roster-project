@@ -19,4 +19,5 @@ public interface UserService {
     User findUserByEmailAndPassword(String email, String password);
 
     public List<UserResponse> getUsers();
+    public List<User> getAllEmployees();
 }

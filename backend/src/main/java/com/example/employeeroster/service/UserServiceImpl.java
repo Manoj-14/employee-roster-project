@@ -3,6 +3,7 @@ package com.example.employeeroster.service;
 import com.example.employeeroster.dto.UserResponse;
 import com.example.employeeroster.exception.UserAlreadyExistsException;
 import com.example.employeeroster.exception.UserNotFoundException;
+import com.example.employeeroster.model.Role;
 import com.example.employeeroster.model.User;
 import com.example.employeeroster.repository.UserRepository;
 import org.modelmapper.ModelMapper;
@@ -88,6 +89,10 @@ public class UserServiceImpl implements UserService{
         return userResponses;
     }
 
+    @Override
+    public List<User> getAllEmployees() {
+        return userRepository.findAllUserByRole(Role.EMPLOYEE);
+    }
 
 
 }

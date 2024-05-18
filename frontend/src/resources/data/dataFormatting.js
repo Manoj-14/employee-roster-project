@@ -28,3 +28,29 @@ export const formatedData = (employees) => {
 
   return formatedData;
 };
+export const convertArraysToObjects = (data) => {
+  const convertedData = {};
+  for (const key in data) {
+    if (
+      data[key].length > 0 &&
+      (key === "morningShift" ||
+        key === "generalShift" ||
+        key === "eveningShift" ||
+        key === "weekOffs" ||
+        key === "holidays")
+    ) {
+      const array = data[key];
+      array.forEach((value) => {
+        convertedData[formatDate(value)] = key;
+      });
+    } else if (!Array.isArray(data[key])) {
+      convertedData[key] = data[key];
+    }
+  }
+
+  return convertedData;
+};
+
+const formatDate = (inputDate) => {
+  return moment(inputDate, "YYYY-MM-DD").format("DD-MM-YYYY");
+};
